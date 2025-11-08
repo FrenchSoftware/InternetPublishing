@@ -5,8 +5,6 @@ if (typeof lucide !== 'undefined') {
 
 // Auto-submit forms on change (for filters, etc.)
 document.addEventListener('DOMContentLoaded', () => {
-  // Add any interactive behaviors here
-
   // Example: Auto-dismiss alerts after 5 seconds
   const alerts = document.querySelectorAll('.alert');
   alerts.forEach(alert => {
