@@ -109,7 +109,7 @@ func Header(user *models.User, r *http.Request) html.Node {
 				html.H1(
 					attr.Class("text-2xl text-black dark:text-white cursor-pointer hover:opacity-80 transition-opacity antialiased"),
 					attr.Style("font-family: var(--font-workbench); font-weight: 400;"),
-					html.Text("French Software"),
+					html.Text("Internet Publishing"),
 				),
 			),
 			// Navigation links
@@ -119,6 +119,13 @@ func Header(user *models.User, r *http.Request) html.Node {
 					attr.Href("/"),
 					attr.ClassIfElse(currentPath == "/", "btn-ghost bg-accent", "btn-ghost"),
 					html.Text("Home"),
+				),
+				html.If(user != nil,
+					html.A(
+						attr.Href("/sites"),
+						attr.ClassIfElse(currentPath == "/sites" || currentPath == "/sites/new", "btn-ghost bg-accent", "btn-ghost"),
+						html.Text("My Sites"),
+					),
 				),
 			),
 		),

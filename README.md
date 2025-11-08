@@ -1,8 +1,8 @@
 [![Discord](https://img.shields.io/badge/Discord-Join%20Us-7289DA?logo=discord&logoColor=white)](https://discord.gg/MaqTgPF3Ch)
 
-# go-webapp-template
+# Internet Publishing
 
-> The French Software Go webapp template
+> Publish Markdown documents from your Github repositories
 
 ## License
 

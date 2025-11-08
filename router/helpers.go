@@ -85,3 +85,28 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	// Otherwise use main router
 	r.Router.ServeHTTP(w, req)
 }
+
+// IsSubdomain checks if the host is a subdomain (e.g., slug.internetpublishing.co)
+func IsSubdomain(host string) bool {
+	// Remove port if present
+	if idx := len(host) - 1; idx >= 0 {
+		for i := idx; i >= 0; i-- {
+			if host[i] == ':' {
+				host = host[:i]
+				break
+			}
+		}
+	}
+
+	// Check if it has 3+ parts (subdomain.domain.tld)
+	dotCount := 0
+	for i := 0; i < len(host); i++ {
+		if host[i] == '.' {
+			dotCount++
+		}
+	}
+
+	// If there are 2+ dots, it's a subdomain
+	// e.g., slug.internetpublishing.co has 2 dots
+	return dotCount >= 2
+}

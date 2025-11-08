@@ -33,11 +33,14 @@ func main() {
 
 	// Initialize repositories
 	users := repositories.NewUsersRepository(db.DB)
+	sites := repositories.NewSitesRepository(db.DB)
 
 	// Initialize controllers
 	googleOAuthController := controllers.NewGoogleOAuthController(users, cfg.GoogleOAuthConfig)
 	signOutController := controllers.NewSignOutController(users)
 	settingsController := controllers.NewSettingsController(users)
+	sitesController := controllers.NewSitesController(&sites)
+	publicSiteController := controllers.NewPublicSiteController(&sites)
 
 	// Initialize router with default configuration
 	// Note: Hot reload endpoints are registered separately to bypass middleware
@@ -83,6 +86,32 @@ func main() {
 	// Settings routes
 	r.Post("/settings/update-profile", settingsController.UpdateProfile)
 	r.Post("/settings/delete-account", settingsController.DeleteAccount)
+
+	// Sites routes
+	r.Get("/sites", sitesController.List)
+	r.Get("/sites/new", sitesController.New)
+	r.Post("/sites/create", sitesController.Create)
+	r.Post("/sites/{id}/delete", sitesController.Delete)
+
+	// Public site route (check for subdomain)
+	r.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		// Check if this is a subdomain request
+		if router.IsSubdomain(req.Host) {
+			publicSiteController.Render(w, req)
+			return
+		}
+		// Otherwise serve home page
+		pages.Home(w, req)
+	})
+
+	// Catch-all for public sites (any path on subdomain)
+	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		if router.IsSubdomain(req.Host) {
+			publicSiteController.Render(w, req)
+		} else {
+			http.NotFound(w, req)
+		}
+	})
 
 	// Start HTTP server
 	slog.Info("http server listening", "addr", cfg.HTTPAddr)
