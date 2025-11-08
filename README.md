@@ -2,7 +2,7 @@
 
 # Internet Publishing
 
-> Publish Markdown documents from your Github repositories
+> Turn your GitHub repositories containing Markdown files into websites
 
 ## Demo
 
