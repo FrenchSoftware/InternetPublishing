@@ -491,39 +491,15 @@ func PublicSite(w http.ResponseWriter, r *http.Request, site *models.Site, htmlC
 			html.Style(
 				html.Text(`
 					body { padding: 2rem; }
-					main { max-width: 800px; margin: 0 auto; }
-					.header { border-bottom: 1px solid var(--contrast-lower); padding-bottom: 1rem; margin-bottom: 2rem; }
-					.footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--contrast-lower); text-align: center; color: var(--muted-color); }
+					main { max-width: 700px; margin: 0 auto; }
 					pre { overflow-x: auto; }
 					code { font-size: 0.9em; }
 				`),
 			),
 		),
 		html.Body(
-			html.Header(
-				attr.Class("header"),
-				html.H1(html.Text(site.Slug)),
-				html.P(
-					html.Text("Published from "),
-					html.A(
-						attr.Href(fmt.Sprintf("https://github.com/%s", site.GithubRepo)),
-						attr.Target("_blank"),
-						html.Text(site.GithubRepo),
-					),
-				),
-			),
 			html.Main(
 				html.Raw(htmlContent),
-			),
-			html.Footer(
-				attr.Class("footer"),
-				html.Small(
-					html.Text("Powered by "),
-					html.A(
-						attr.Href("https://internetpublishing.co"),
-						html.Text("Internet Publishing"),
-					),
-				),
 			),
 		),
 	)

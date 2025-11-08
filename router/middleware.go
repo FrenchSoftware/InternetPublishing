@@ -107,3 +107,19 @@ func APIVersion(version string) func(http.Handler) http.Handler {
 		})
 	}
 }
+
+// SubdomainHandler is a middleware that intercepts subdomain requests and routes them to a custom handler
+// If the request is for a subdomain (e.g., slug.internetpublishing.co), it calls the provided handler
+// Otherwise, it continues to the next middleware/handler
+func SubdomainHandler(handler HandlerFunc) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if IsSubdomain(r.Host) {
+				// Use the Handle wrapper to properly handle errors from HandlerFunc
+				Handle(handler)(w, r)
+				return
+			}
+			next.ServeHTTP(w, r)
+		})
+	}
+}

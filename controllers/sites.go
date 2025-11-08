@@ -70,6 +70,15 @@ func (c *SitesController) Create(w http.ResponseWriter, r *http.Request) error {
 	// Additional validation
 	additionalErrs := make(validator.ValidationErrors)
 
+	// Reserved slugs that cannot be used
+	reservedSlugs := []string{"www", "api", "admin", "app", "mail", "ftp", "blog", "shop", "store"}
+	for _, reserved := range reservedSlugs {
+		if slug == reserved {
+			additionalErrs.Add("slug", "This slug is reserved and cannot be used")
+			break
+		}
+	}
+
 	if !slugPattern.MatchString(slug) {
 		additionalErrs.Add("slug", "Slug must contain only lowercase letters, numbers, and hyphens")
 	}

@@ -58,6 +58,10 @@ func main() {
 		}
 	})
 
+	// Apply subdomain routing middleware first (before auth)
+	// This intercepts all subdomain requests and routes them to the public site controller
+	r.Use(router.SubdomainHandler(publicSiteController.Render))
+
 	// Apply authentication middleware globally
 	r.Use(auth.AuthMiddleware(users))
 
@@ -92,26 +96,6 @@ func main() {
 	r.Get("/sites/new", sitesController.New)
 	r.Post("/sites/create", sitesController.Create)
 	r.Post("/sites/{id}/delete", sitesController.Delete)
-
-	// Public site route (check for subdomain)
-	r.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		// Check if this is a subdomain request
-		if router.IsSubdomain(req.Host) {
-			publicSiteController.Render(w, req)
-			return
-		}
-		// Otherwise serve home page
-		pages.Home(w, req)
-	})
-
-	// Catch-all for public sites (any path on subdomain)
-	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		if router.IsSubdomain(req.Host) {
-			publicSiteController.Render(w, req)
-		} else {
-			http.NotFound(w, req)
-		}
-	})
 
 	// Start HTTP server
 	slog.Info("http server listening", "addr", cfg.HTTPAddr)
